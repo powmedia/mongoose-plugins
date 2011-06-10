@@ -15,7 +15,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose')
-  , timestamper = require('../../../lib/mongoose-plugins/timestamper')
+  , timestamper = require('../lib/timestamper')
   , assert = require('assert')
   ;
 

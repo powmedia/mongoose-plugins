@@ -15,7 +15,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose')
-  , authenticator = require('../../../lib/mongoose-plugins/authenticator')
+  , authenticator = require('../lib/authenticator')
   , assert = require('assert')
   , bcrypt = require('bcrypt')
   ;

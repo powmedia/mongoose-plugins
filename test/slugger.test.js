@@ -15,7 +15,7 @@
  * Module dependencies.
  */
 var mongoose = require('mongoose')
-  , slugger = require('../../../lib/mongoose-plugins/slugger')
+  , slugger = require('../lib/slugger')
   , assert = require('assert')
   ;
 
