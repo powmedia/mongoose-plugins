@@ -133,9 +133,10 @@ exports.virtualGetter = {
     }
 };
 
-/*
+
+
 exports.asyncGetter = testCase({
-    setUp: function(callback) {        
+    /*setUp: function(callback) {      
         //Load a business
         fixtures.load({
             Domain: [
@@ -148,38 +149,86 @@ exports.asyncGetter = testCase({
         
         //Create booking attached to the business
         this.job = createJob({ did: '000000000000000000000001' });
+    },*/
+    
+    setUp: function(callback) {
+        //Create models
+        this.author = new Author({
+            _id: '000000000000000000000005',
+            name: 'William Shakespeare'
+        });
+        
+        this.post = new Post({
+            title: 'Post title',
+            authorId: '000000000000000000000005'
+        });
+        
+        //Save the original method which will be mocked
+        this._findOne = Author.findOne;
+        
+        callback();
     },
     
-    'fetches the associated Domain': function(test) {
-        test.expect(1);
+    tearDown: function(callback) {
+        //Return the original method
+        Author.findOne = this._findOne;
         
-        this.job.getDomain(function(err, domain) {
+        callback();
+    },
+    
+    'fetches the referenced document': function(test) {
+        test.expect(2);
+        
+        var post = this.post,
+            author = this.author;
+        
+        //Mock the DB request
+        Author.findOne = function(criteria, callback) {
+            //Make sure the correct ID was requested
+            test.same(criteria._id.toHexString(), '000000000000000000000005');
+            
+            //Return the author, as if this was the DB returning it
+            callback(null, author);
+        }
+        
+        //Check that the method fetches the correct referenced object
+        post.getAuthor(function(err, author2) {
             if (err) throw err;
             
-            test.same(domain.name, 'Plumbing Bros');
+            test.same(author2, author);
+            
             test.done();
         });
     },
     
     'caches the domain object to prevent multiple DB fetches': function(test) {
-        test.expect(2);
+        test.expect(3);
         
-        var job = this.job;
+        var post = this.post,
+            author = this.author;
         
-        //Get booking the first time (from DB)
-        job.getDomain(function(err, domain) {
-            test.same(typeof domain._testCached, 'undefined');
+        //Mock the DB request
+        Author.findOne = function(criteria, callback) {
+            //Make sure the correct ID was requested
+            test.same(criteria._id.toHexString(), '000000000000000000000005');
+            
+            //Return the author, as if this was the DB returning it
+            callback(null, author);
+        }
+        
+        //Get doc the first time (from DB)
+        post.getAuthor(function(err, author2) {
+            test.same(typeof author2._testCached, 'undefined');
             
             //Mark it as cached
-            domain._testCached = true;
+            author2._testCached = true;
             
-            //Get the booking again (cached)
-            job.getDomain(function(err, domain2) {
-                test.ok(domain2._testCached, 'Got the cached object');
+            //Get the doc again (cached)
+            post.getAuthor(function(err, author3) {
+                test.ok(author3._testCached, 'Got the cached object');
                 
                 test.done();
             });
         });
     }
 });
-*/
