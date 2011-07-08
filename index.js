@@ -5,3 +5,5 @@ exports.timestamper = require('./lib/timestamper');
 exports.slugger = require('./lib/slugger');
 
 exports.authenticator = require('./lib/authenticator');
+
+exports.validators = require('./lib/validators');
