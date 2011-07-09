@@ -1,5 +1,5 @@
 /**
-* referenceLoader Mongoose plugin tests
+* Pointer Mongoose plugin tests
 * 
 * Run $ nodeunit
 * 
@@ -10,7 +10,7 @@
 var mongoose = require('mongoose'),
     testCase = require('nodeunit').testCase,
     Schema = mongoose.Schema,
-    referenceLoader = require('../lib/referenceLoader');
+    pointer = require('../lib/pointer');
 
 
 //Set up schemas
@@ -22,7 +22,7 @@ var postSchema = new Schema({
     title: String,
     authorId: Schema.ObjectId
 });
-postSchema.plugin(referenceLoader({
+postSchema.plugin(pointer({
     idKey: 'authorId',
     virtualKey: 'author',
     modelName: 'Author'
@@ -48,7 +48,7 @@ exports.options_idKey = {
         });
         
         //Add the plugin
-        schema.plugin(referenceLoader({
+        schema.plugin(pointer({
             modelName: 'Author',
             idKey: 'aid'
         }));
@@ -70,7 +70,7 @@ exports.options_idKey = {
         });
         
         //Add the plugin
-        schema.plugin(referenceLoader({
+        schema.plugin(pointer({
             modelName: 'Author'
         }));
         
@@ -90,7 +90,7 @@ exports.options_idKey = {
         });
         
         //Add the plugin
-        schema.plugin(referenceLoader({
+        schema.plugin(pointer({
             modelName: 'Author',
             idKey: 'authorId'
         }));
@@ -112,7 +112,7 @@ exports.options_virtualKey = {
         var schema = new Schema({ title: String });
 
         //Add the plugin with custom name for the virtual
-        schema.plugin(referenceLoader({
+        schema.plugin(pointer({
             modelName: 'Author',
             virtualKey: 'author123'
         }));
@@ -128,7 +128,7 @@ exports.options_virtualKey = {
         var schema = new Schema({ title: String });
 
         //Add the plugin with custom name for the virtual
-        schema.plugin(referenceLoader({
+        schema.plugin(pointer({
             modelName: 'Author'
         }));
 
@@ -147,7 +147,7 @@ exports.options_getterKey = {
         var schema = new Schema({ title: String });
         
         //Add the plugin with custom name for the virtual
-        schema.plugin(referenceLoader({
+        schema.plugin(pointer({
             modelName: 'Author',
             getterKey: 'getAuthor123'
         }));
@@ -163,7 +163,7 @@ exports.options_getterKey = {
         var schema = new Schema({ title: String });
         
         //Add the plugin with custom name for the virtual
-        schema.plugin(referenceLoader({
+        schema.plugin(pointer({
             modelName: 'Author'
         }));
         
