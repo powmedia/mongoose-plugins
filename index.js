@@ -6,6 +6,6 @@ exports.slugger = require('./lib/slugger');
 
 exports.authenticator = require('./lib/authenticator');
 
-exports.referenceLoader = require('./lib/referenceLoader');
+exports.pointer = require('./lib/pointer');
 
 exports.validators = require('./lib/validators');
