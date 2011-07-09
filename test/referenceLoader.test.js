@@ -37,6 +37,143 @@ var Post = mongoose.model('Post'),
     Author = mongoose.model('Author');
 
 
+
+exports.options_idKey = {
+    'is added to the schema if it doesnt exist already': function(test) {
+        test.expect(3);
+        
+        //Create schema without the ID key
+        var schema = new Schema({
+            title: String
+        });
+        
+        //Add the plugin
+        schema.plugin(referenceLoader({
+            modelName: 'Author',
+            idKey: 'aid'
+        }));
+        
+        //Test that the ID key had been added correctly
+        var path = schema.paths.aid;
+        test.ok(typeof path !== 'undefined');
+        test.same(path.isRequired, true);
+        test.same(path.options.type, Schema.ObjectId);
+        test.done();
+    },
+    
+    'if idKey option is not supplied, a default name is used': function(test) {
+        test.expect(1);
+        
+        //Create schema without the ID key
+        var schema = new Schema({
+            title: String
+        });
+        
+        //Add the plugin
+        schema.plugin(referenceLoader({
+            modelName: 'Author'
+        }));
+        
+        //Test
+        var path = schema.paths.authorId;
+        test.ok(typeof path !== 'undefined');
+        test.done();
+    },
+    
+    'if there is an existing idKey, it is not overwritten': function(test) {
+        test.expect(1);
+        
+        //Create schema with the ID key
+        var schema = new Schema({
+            title: String,
+            authorId: { type: Schema.ObjectId, required: false }
+        });
+        
+        //Add the plugin
+        schema.plugin(referenceLoader({
+            modelName: 'Author',
+            idKey: 'authorId'
+        }));
+        
+        //Test
+        var path = schema.paths.authorId;
+        test.same(path.isRequired, false);
+        test.done();
+    }
+};
+
+
+
+exports.options_virtualKey = {
+    'is added to the schema with the given name': function(test) {
+        test.expect(1);
+
+        //Create schema with the ID key
+        var schema = new Schema({ title: String });
+
+        //Add the plugin with custom name for the virtual
+        schema.plugin(referenceLoader({
+            modelName: 'Author',
+            virtualKey: 'author123'
+        }));
+
+        test.ok(typeof schema.virtuals.author123 !== 'undefined');
+        test.done();
+    },
+
+    'if virtualKey option is not supplied, a default is used': function(test) {
+        test.expect(1);
+
+        //Create schema with the ID key
+        var schema = new Schema({ title: String });
+
+        //Add the plugin with custom name for the virtual
+        schema.plugin(referenceLoader({
+            modelName: 'Author'
+        }));
+
+        test.ok(typeof schema.virtuals.author !== 'undefined');
+        test.done();
+    }
+};
+
+
+
+exports.options_getterKey = {
+    'option is used to name the async getter method': function(test) {
+        test.expect(1);
+        
+        //Create schema with the ID key
+        var schema = new Schema({ title: String });
+        
+        //Add the plugin with custom name for the virtual
+        schema.plugin(referenceLoader({
+            modelName: 'Author',
+            getterKey: 'getAuthor123'
+        }));
+        
+        test.ok(typeof schema.methods.getAuthor123 !== 'undefined');
+        test.done();
+    },
+    
+    'if option is not supplied, a default is used': function(test) {
+        test.expect(1);
+        
+        //Create schema with the ID key
+        var schema = new Schema({ title: String });
+        
+        //Add the plugin with custom name for the virtual
+        schema.plugin(referenceLoader({
+            modelName: 'Author'
+        }));
+        
+        test.ok(typeof schema.methods.getAuthor !== 'undefined');
+        test.done();
+    },
+};
+
+
+
 exports.virtualSetter = {
     'requires a model instance': function(test) {
         test.expect(1);
@@ -134,23 +271,7 @@ exports.virtualGetter = {
 };
 
 
-
-exports.asyncGetter = testCase({
-    /*setUp: function(callback) {      
-        //Load a business
-        fixtures.load({
-            Domain: [
-                getDomain({
-                    _id: '000000000000000000000001',
-                    name: 'Plumbing Bros'
-                })
-            ]
-        }, callback);
-        
-        //Create booking attached to the business
-        this.job = createJob({ did: '000000000000000000000001' });
-    },*/
-    
+exports.asyncGetter = testCase({    
     setUp: function(callback) {
         //Create models
         this.author = new Author({
