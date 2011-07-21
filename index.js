@@ -9,3 +9,5 @@ exports.authenticator = require('./lib/authenticator');
 exports.pointer = require('./lib/pointer');
 
 exports.validators = require('./lib/validators');
+
+exports.utils = require('./lib/utils');
