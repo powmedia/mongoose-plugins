@@ -1,6 +1,11 @@
 /**
 * Authenticator Mongoose plugin tests
- *
+* 
+* TODO: Write tests in Nodeunit, improve
+*       Add a test for setting a password, checking it, 
+*           changing something else and saving the model, then checking that the password
+*           still works.  Then change the password and save, and check that it has changed.
+*
 * Run $ expresso
 *
 * These tests use the Mongoose pre save middleware rather than save callbacks to do asserts because this way
@@ -217,8 +222,8 @@ module.exports = {
                 if (err) throw err;
 
                 assert.eql(false, passwordMatches, 'Incorrect password fails authentication');
-            });
-            
+            });    
+
             n++;
             next();
         });
